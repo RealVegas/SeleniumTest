@@ -41,7 +41,7 @@ def upper_level():
     # Проверяем по заголовку, если нет выходим из программы
     if "Википедия" not in browser.title:
         if not err_upper:
-            warning_box('Что-то пошло не так: Я не смог открыть википедию')
+            warning_box('Что-то пошло не так: Не могу открыть википедию')
         browser.quit()
 
     print('\n+---------------------------------------------------------------------+')
@@ -52,7 +52,7 @@ def upper_level():
     while True:
 
         new_request: str = input('Что еще Вы хотите узнать? ')
-        new_search: browser = browser.find_element(By.ID, "searchInput")
+        new_search: webdriver = browser.find_element(By.ID, "searchInput")
 
         if user_request != '':
             new_search.send_keys(new_request)
@@ -71,24 +71,23 @@ def option_one():
     print('| 3. Завершить работу.                                                |')
     print('+---------------------------------------------------------------------+\n')
 
-    sel_request: str = input('Выберите (1/2): ')
+    sel_request: str = input('Выберите (1/2/3): ')
 
     if sel_request == '1':
 
-        print('\b+---------------------------------------------------------------------+')
+        print('\n+---------------------------------------------------------------------+')
         print('| Для прокрутки страницы вниз нажимайте клавишу Enter                 |')
         print('| Введенные символы будут отображаться (я не могу отключить ввод)     |')
-        print('| Опция 2 доступна в любой момент (Введите 2 нажмите Enter            |')
+        print('| Опция 2 доступна в любой момент (Введите 2 нажмите Enter)           |')
         print('+---------------------------------------------------------------------+\n')
 
-        # curr_url = browser.current_url
         body: webdriver = browser.find_element(By.TAG_NAME, 'body')
 
         while True:
 
             body.send_keys(Keys.PAGE_DOWN)
 
-            user_input = input()
+            user_input: str = input()
             if user_input == '2':
                 option_two()
 
@@ -102,15 +101,15 @@ def option_one():
 # При выборе опции 2
 def option_two():
 
-    print()
+    print('\nПрограмма работает... немного терпения')
 
     # Список связанных страниц
-    rel_pages = []
+    rel_pages: list[webdriver] = []
 
     # Перебор тегов div
     for div_tag in browser.find_elements(By.TAG_NAME, 'div'):
         # Ищем атрибут класса
-        class_attr = div_tag.get_attribute('class')
+        class_attr: str = div_tag.get_attribute('class')
         if class_attr == 'mw-search-result-heading':
             rel_pages.append(div_tag)
 
@@ -119,12 +118,12 @@ def option_two():
         upper_level()
 
     if len(rel_pages) > 1:
-        random_page = choice(rel_pages)
+        random_page: webdriver = choice(rel_pages)
     else:
-        random_page = rel_pages[0]
+        random_page: webdriver = rel_pages[0]
 
     # Переход к связанной странице
-    page_link = random_page.find_element(By.TAG_NAME, 'a').get_attribute('href')
+    page_link: str = random_page.find_element(By.TAG_NAME, 'a').get_attribute('href')
     browser.get(page_link)
 
     option_one()
@@ -143,7 +142,7 @@ except WebDriverException:
 # Проверяем по заголовку, если нет выходим из программы
 if "Википедия" not in browser.title:
     if not err_state:
-        warning_box('Что-то пошло не так: Я не смог открыть википедию')
+        warning_box('Что-то пошло не так: Не могу открыть википедию')
     browser.quit()
 
 else:
@@ -156,7 +155,7 @@ else:
     while True:
 
         user_request: str = input('Что Вы хотите узнать? ')
-        search_box = browser.find_element(By.ID, "searchInput")
+        search_box: webdriver = browser.find_element(By.ID, "searchInput")
 
         if user_request != '':
             search_box.send_keys(user_request)
