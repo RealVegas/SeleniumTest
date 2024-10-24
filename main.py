@@ -8,8 +8,11 @@
 # - перейти на одну из внутренних статей.
 # выйти из программы.
 
+import keyboard
 import tkinter as tk
 from tkinter import messagebox as infobox
+
+from random import choice
 
 from selenium import webdriver
 from selenium.common import WebDriverException
@@ -19,10 +22,74 @@ from selenium.webdriver.common.by import By
 
 # Для сообщений об ошибках
 def warning_box(message_text):
-    console = tk.Tk()
+    console: tk = tk.Tk()
     console.withdraw()
     infobox.showwarning(message=message_text)
     console.destroy()
+
+
+def option_one():
+
+    print('\n+---------------------------------------------------------------------+')
+    print('| Сейчас вы можете:                                                   |')
+    print('+---------------------------------------------------------------------+')
+    print('| 1. Листать страницы текущей статьи;                                 |')
+    print('| 2. Перейти на одну из связанных страниц.                            |')
+    print('+---------------------------------------------------------------------+\n')
+
+    sel_request: str = input('Выберите (1/2): ')
+
+    if sel_request == '1':
+
+        print('\b+---------------------------------------------------------------------+')
+        print('| Для прокрутки страницы вниз нажимайте любую клавишу                 |')
+        print('| Введенные символы будут отображаться (я не могу отключить ввод)     |')
+        print('| Опция 2 доступна в любой момент                                     |')
+        print('+---------------------------------------------------------------------+\n')
+
+        curr_url = browser.current_url
+        body: webdriver = browser.find_element(By.TAG_NAME, 'body')
+
+        while True:
+
+            event = keyboard.read_event()
+
+            if event.event_type == keyboard.KEY_DOWN:
+                body.send_keys(Keys.PAGE_DOWN)
+                if event.name == '2':
+                    option_two()
+
+
+def option_two():
+    print('Ввели 2')
+
+# us_req = input('1/2')
+#
+# if us_req == '2':
+#     print()
+#
+#     # Список связанных страниц
+#     rel_pages = []
+#
+#     # Перебор тегов div
+#     for div_tag in browser.find_elements(By.TAG_NAME, 'div'):
+#         # Ищем атрибут класса
+#         class_attr = div_tag.get_attribute('class')
+#         if class_attr == 'hatnote navigation-not-searchable':
+#             rel_pages.append(div_tag)
+#
+#     if len(rel_pages) > 1:
+#         # Выбор случайной страницы
+#         random_page = choice(rel_pages)
+#     else:
+#         random_page = rel_pages[0]
+#
+#     # Переход к связанной странице
+#     page_link = random_page.find_element(By.TAG_NAME, 'a').get_attribute('href')
+#     browser.get(page_link)
+
+# - листать параграфы статьи;
+# - перейти на одну из внутренних статей.
 
 
 err_state: bool = False
@@ -31,7 +98,7 @@ browser: webdriver = webdriver.Chrome()
 try:
     browser.get('https://ru.wikipedia.org/wiki/Заглавная_страница')
 except WebDriverException:
-    err_state = True
+    err_state: bool = True
     warning_box('Похоже отсутствует Сеть')
 
 # Проверяем по заголовку, если нет выходим из программы
@@ -49,44 +116,10 @@ else:
 
     while True:
 
-        user_request = input('Что Вы хотите узнать? ')
+        user_request: str = input('Что Вы хотите узнать? ')
         search_box = browser.find_element(By.ID, "searchInput")
 
         if user_request != '':
             search_box.send_keys(user_request)
             search_box.send_keys(Keys.RETURN)
-            break
-
-    print('+---------------------------------------------------------------------+')
-    print('| Сейчас вы можете:                                                   |')
-    print('+---------------------------------------------------------------------+')
-    print('| 1. Листать параграфы текущей статьи;                                |')
-    print('| 2. Перейти на одну из связанных страниц.                            |')
-    print('+---------------------------------------------------------------------+\n')
-
-    user_request = input('Выберите (1/2): ')
-
-    if user_request == '1':
-        print('\nДля показа следующего параграфа нажмите любую клавишу\n')
-
-        paragraphs = browser.find_elements(By.TAG_NAME, "p")
-        for paragraph in paragraphs:
-            print(paragraph.text, end='')
-            input('')
-
-    elif user_request == '2':
-        print()
-
-        rel_pages = []
-        for element in browser.find_elements(By.TAG_NAME, "div")
-        # Чтобы искать атрибут класса
-        cl = element.get.attribute("class")
-        if cl == "hatnote navigation-not-searchable":
-            hatnotes.append(element)
-
-        print(hatnotes)
-        hatnote = random.choice(hatnotes)
-
-        # Для получения ссылки мы должны найти на сайте тег "a" внутри тега "div"
-        link = hatnote.find_element(By.TAG_NAME, "a").get.attribute("href")
-        browser.get(link)
+            option_one()
