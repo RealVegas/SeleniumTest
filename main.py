@@ -59,34 +59,35 @@ def option_one():
                 if event.name == '2':
                     option_two()
 
+    elif sel_request == '2':
+        option_two()
+
 
 def option_two():
-    print('Ввели 2')
 
-# us_req = input('1/2')
-#
-# if us_req == '2':
-#     print()
-#
-#     # Список связанных страниц
-#     rel_pages = []
-#
-#     # Перебор тегов div
-#     for div_tag in browser.find_elements(By.TAG_NAME, 'div'):
-#         # Ищем атрибут класса
-#         class_attr = div_tag.get_attribute('class')
-#         if class_attr == 'hatnote navigation-not-searchable':
-#             rel_pages.append(div_tag)
-#
-#     if len(rel_pages) > 1:
-#         # Выбор случайной страницы
-#         random_page = choice(rel_pages)
-#     else:
-#         random_page = rel_pages[0]
-#
-#     # Переход к связанной странице
-#     page_link = random_page.find_element(By.TAG_NAME, 'a').get_attribute('href')
-#     browser.get(page_link)
+    print()
+
+    # Список связанных страниц
+    rel_pages = []
+
+    # Перебор тегов div
+    for div_tag in browser.find_elements(By.TAG_NAME, 'div'):
+        # Ищем атрибут класса
+        class_attr = div_tag.get_attribute('class')
+        if class_attr == 'hatnote navigation-not-searchable':
+            rel_pages.append(div_tag)
+
+    if len(rel_pages) > 1:
+        # Выбор случайной страницы
+        random_page = choice(rel_pages)
+    else:
+        random_page = rel_pages[0]
+
+    # Переход к связанной странице
+    page_link = random_page.find_element(By.TAG_NAME, 'a').get_attribute('href')
+    browser.get(page_link)
+
+    option_one()
 
 # - листать параграфы статьи;
 # - перейти на одну из внутренних статей.
