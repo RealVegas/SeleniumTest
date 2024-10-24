@@ -8,7 +8,6 @@
 # - перейти на одну из внутренних статей.
 # выйти из программы.
 
-import keyboard
 import tkinter as tk
 from tkinter import messagebox as infobox
 
@@ -27,6 +26,8 @@ def warning_box(message_text):
     infobox.showwarning(message=message_text)
     console.destroy()
 
+
+# Если больше связанных страниц  нет
 def upper_level():
 
     err_upper: bool = False
@@ -54,7 +55,7 @@ def upper_level():
         new_search: browser = browser.find_element(By.ID, "searchInput")
 
         if user_request != '':
-            new_search.send_keys(user_request)
+            new_search.send_keys(new_request)
             new_search.send_keys(Keys.RETURN)
             option_one()
 
@@ -75,22 +76,21 @@ def option_one():
     if sel_request == '1':
 
         print('\b+---------------------------------------------------------------------+')
-        print('| Для прокрутки страницы вниз нажимайте любую клавишу                 |')
+        print('| Для прокрутки страницы вниз нажимайте клавишу Enter                 |')
         print('| Введенные символы будут отображаться (я не могу отключить ввод)     |')
-        print('| Опция 2 доступна в любой момент                                     |')
+        print('| Опция 2 доступна в любой момент (Введите 2 нажмите Enter            |')
         print('+---------------------------------------------------------------------+\n')
 
-        curr_url = browser.current_url
+        # curr_url = browser.current_url
         body: webdriver = browser.find_element(By.TAG_NAME, 'body')
 
         while True:
 
-            event = keyboard.read_event()
+            body.send_keys(Keys.PAGE_DOWN)
 
-            if event.event_type == keyboard.KEY_DOWN:
-                body.send_keys(Keys.PAGE_DOWN)
-                if event.name == '2':
-                    option_two()
+            user_input = input()
+            if user_input == '2':
+                option_two()
 
     elif sel_request == '2':
         option_two()
@@ -117,7 +117,8 @@ def option_two():
     # Выбор случайной страницы
     if len(rel_pages) == 0:
         upper_level()
-    elif len(rel_pages) > 1:
+
+    if len(rel_pages) > 1:
         random_page = choice(rel_pages)
     else:
         random_page = rel_pages[0]
